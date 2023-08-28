@@ -58,10 +58,25 @@ public class forma1 extends javax.swing.JFrame {
         });
 
         btn_seleccionar.setText("seleccionar");
+        btn_seleccionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_seleccionarActionPerformed(evt);
+            }
+        });
 
         btn_insertar.setText("insertar");
+        btn_insertar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_insertarActionPerformed(evt);
+            }
+        });
 
         btn_cerrar.setText("cerrar");
+        btn_cerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_cerrarActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -112,12 +127,52 @@ public class forma1 extends javax.swing.JFrame {
     private void btn_conectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_conectarActionPerformed
         // TODO add your handling code here:
         try{
-            
+            connect=DriverManager.getConnection(url);
+            if(connect!=null){
             JOptionPane.showMessageDialog(null,"Conectados!!!!!!");
+            }
         }catch(Exception x){
         JOptionPane.showMessageDialog(null,x.getMessage().toString());
     }
     }//GEN-LAST:event_btn_conectarActionPerformed
+
+    private void btn_seleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_seleccionarActionPerformed
+        // TODO add your handling code here:
+        model.setRowCount(0);
+        ResultSet resul=null;
+        
+        try{
+            PreparedStatement st=connect.prepareStatement("select codigo,nombre from producto");
+            resul=st.executeQuery();
+            
+            while(resul.next()){
+                model.addRow(new Object[]{resul.getInt("codigo"),resul.getString("nombre")});
+            }
+        }catch(Exception x){
+            JOptionPane.showMessageDialog(null,x.getMessage().toString());
+        }
+    }//GEN-LAST:event_btn_seleccionarActionPerformed
+
+    private void btn_insertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_insertarActionPerformed
+        // TODO add your handling code here:
+        try{
+            PreparedStatement st=connect.prepareStatement("insert into producto(nombre) values('nuevo producto')");
+            st.execute();
+            JOptionPane.showMessageDialog(null,"Datos guardados");
+        }catch(Exception x){
+            JOptionPane.showMessageDialog(null,x.getMessage().toString());
+        }
+    }//GEN-LAST:event_btn_insertarActionPerformed
+
+    private void btn_cerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cerrarActionPerformed
+        // TODO add your handling code here:
+        try{
+            connect.close();
+            JOptionPane.showMessageDialog(null,"Se ha cerrado la conexion exitosamente");
+        }catch(Exception x){
+            JOptionPane.showMessageDialog(null,x.getMessage().toString());
+        }
+    }//GEN-LAST:event_btn_cerrarActionPerformed
 
     /**
      * @param args the command line arguments
